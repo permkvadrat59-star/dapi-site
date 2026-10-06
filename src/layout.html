@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru" data-mode="normal" data-page="{{page}}"{{force}}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+{{robots}}<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171717" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:image" content="{{base}}assets/img/logo/og.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/logo/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/img/logo/favicon-192.png">
+<link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/TikTokSans-300-900-cyrillic.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/DAPI-Display-Regular.woff2">
+<script>(function(){var d=document.documentElement,f=d.getAttribute('data-force'),h=location.hash.slice(1).toLowerCase(),m=null;try{m=localStorage.getItem('dapi-mode')}catch(e){}if(h!=='dapi'&&h!=='normal')h=null;d.setAttribute('data-mode',f||h||m||'normal')})()</script>
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+<div class="shell">
+  <header class="rail">
+    <a class="brand" href="index.html" aria-label="DAPI, на главную"><span class="wordmark" aria-hidden="true"><span>D</span><span>A</span><span>P</span><span>I</span></span></a>
+    <p class="brand-sub">Digital And People Initiative</p>
+    <p class="stamp" data-stamp aria-hidden="true"></p>
+    <nav class="nav" aria-label="Разделы сайта">
+{{nav}}
+    </nav>
+    <div class="rail-foot">
+      <div class="mode" role="group" aria-label="Режим сайта">
+        <button type="button" data-set-mode="normal" aria-pressed="true">Normal</button>
+        <button type="button" data-set-mode="dapi" aria-pressed="false">DAPI</button>
+      </div>
+      <button class="share" type="button" data-share>{{icon:link-simple}}<span data-label>Ссылка на этот режим</span></button>
+      <a class="rail-phone" href="tel:+79504500555">+7 950 450-05-55</a>
+      <p class="rail-city">Пермь</p>
+    </div>
+  </header>
+  <main id="main">
+    <div class="page">
+{{content}}
+      <footer class="foot">
+        <div class="foot-brand">
+          <span class="wordmark" aria-hidden="true">DAPI</span>
+          <p>Digital And People Initiative</p>
+        </div>
+        <nav class="foot-nav" aria-label="Все страницы">
+{{footnav}}
+        </nav>
+        <div class="foot-contact">
+          <a href="tel:+79504500555">+7 950 450-05-55</a>
+          <p>Пермь, работаем удаленно по России</p>
+        </div>
+        <p class="foot-legal">© {{year}} DAPI</p>
+      </footer>
+    </div>
+  </main>
+</div>
+</body>
+</html>
