@@ -125,7 +125,7 @@
     });
   }
 
-  // кадр с людьми на первом экране: команда сменяется сама, по клику следующий
+  // кадр с людьми на первом экране: команда сменяется сама каждые две секунды, по клику следующий
   document.querySelectorAll('[data-people]').forEach(box => {
     const slides = [...box.querySelectorAll('[data-slide]')];
     const frame = box.querySelector('.people-frame');
@@ -145,11 +145,9 @@
     const stop = () => clearInterval(timer);
     const start = () => {
       stop();
-      if (!calm) timer = setInterval(() => show(i + 1), 4200);
+      timer = setInterval(() => show(i + 1), 2000);
     };
     frame.addEventListener('click', () => { show(i + 1); start(); });
-    box.addEventListener('pointerenter', stop);
-    box.addEventListener('pointerleave', start);
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
     start();
   });
