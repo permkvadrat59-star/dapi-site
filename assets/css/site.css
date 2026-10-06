@@ -37,10 +37,11 @@
 
    ЯДРО (не меняется)   логотип, левая колонка, сетка и отступы, углы 14 px и пилюли,
                         тонкие линии, моноширинные подписи, лайм как единственный акцент.
-   01 NORMAL            спокойное. Обычная ширина букв, строчные заголовки, без меток.
-   02 DAPI              выразительное. Широкий жирный капс, крупные буквы D A P I,
-                        системные подписи, лаймовые метки и геометрия.
-   03 BROTHER           скрытое. Те же выразительные формы на графите, буквы сразу показывают людей.
+   01 NORMAL            спокойное, на молочном. Обычная ширина букв, строчные заголовки,
+                        прямой кадр. Лаймовые акценты уже есть.
+   02 DAPI              выразительное, на графите. Широкий жирный капс, крупные буквы D A P I,
+                        системные подписи, скошенные кадры, пометки от руки.
+   03 BROTHER           скрытое. Палитра и формы как у DAPI, буквы сразу показывают людей.
 
    Состояния отличаются только значениями переменных ниже. Разметка у всех одна. */
 
@@ -63,18 +64,19 @@
   --display:var(--sans);
 }
 
-/* ── состояние 01 · NORMAL ── */
+/* ── состояние 01 · NORMAL: молочный фон, лаймовые акценты, спокойная типографика ── */
 :root{
   --bg:var(--milk); --surface:var(--milk-soft); --line:var(--milk-line);
   --ink:var(--graphite); --ink-2:#4A4A47; --ink-3:#5F5E58;
   --accent:var(--graphite); --on-accent:var(--milk);
   --hint:var(--lime-deep);
   --photo:none;                       /* фото в цвете во всех состояниях */
+  --logo-flip:none;                   /* темный логотип «Вместе» на светлом фоне */
   --lift:0 22px 44px -28px rgba(23,23,23,.38);
 
-  --spot:transparent;                 /* лаймовые метки системы выключены */
+  --spot:var(--lime);                 /* лаймовые метки системы */
+  --tick:3px;
   --sys:none;                         /* системные подписи скрыты */
-  --tick:0px;
   --human:var(--sans);                /* «человеческая» строка набрана обычным шрифтом */
 
   --d-stretch:100%; --d-weight:700; --d-case:none; --d-track:-.03em; --d-lh:1.04; --d-gap:0em;
@@ -88,20 +90,25 @@
 
   --frame:inset(0 round 14px);
   --frame-alt:inset(0 round 14px);
-  --blank-bg:var(--surface); --blank-ink:color-mix(in srgb,var(--ink) 16%,transparent); --blank-label:var(--ink-3);
-  --and-bg:var(--surface); --and-ink:var(--ink);
-  --band-bg:transparent; --band-ink:var(--ink); --band-ink-2:var(--ink-2); --band-pad:0px;
-  --cta-btn:var(--accent); --cta-btn-ink:var(--on-accent);
-  --arr-pad:0px; --arr-bg:transparent; --arr-ink:currentColor;
+  --blank-bg:var(--lime); --blank-ink:var(--lime-ink); --blank-label:var(--lime-ink);
+  --and-bg:var(--graphite); --and-ink:var(--lime);
+  --band-bg:var(--graphite); --band-ink:var(--milk); --band-ink-2:#C9C7BE; --band-pad:clamp(24px,4vw,48px);
+  --cta-btn:var(--lime); --cta-btn-ink:var(--lime-ink);
+  --arr-pad:7px; --arr-bg:var(--lime); --arr-ink:var(--lime-ink);
   --note-ink:var(--ink); --note-mark:var(--spot);
   color-scheme:light;
 }
 
-/* ── общее для выразительных состояний 02 и 03 ── */
+/* ── состояния 02 · DAPI и 03 · BROTHER: графит, лайм, выразительная типографика ── */
 :root[data-mode="dapi"],:root[data-mode="brother"]{
-  --spot:var(--lime);
+  --bg:var(--graphite); --surface:var(--graphite-soft); --line:var(--graphite-line);
+  --ink:var(--milk); --ink-2:#C9C7BE; --ink-3:#9C9A93;
+  --accent:var(--lime); --on-accent:var(--lime-ink);
+  --hint:var(--lime);
+  --logo-flip:invert(1);
+  --lift:0 22px 44px -26px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
+
   --sys:flex;
-  --tick:3px;
   --human:var(--hand);
 
   --d-stretch:125%; --d-weight:800; --d-case:uppercase; --d-track:-.012em; --d-lh:.98; --d-gap:.3em;
@@ -115,31 +122,15 @@
 
   --frame:polygon(7% 0,100% 7%,92% 100%,0 91%);
   --frame-alt:polygon(0 6%,93% 0,100% 93%,8% 100%);
-  --blank-bg:var(--lime); --blank-ink:var(--lime-ink); --blank-label:var(--lime-ink);
-}
-
-/* ── состояние 02 · DAPI ── */
-:root[data-mode="dapi"]{
-  --and-bg:var(--graphite); --and-ink:var(--lime);
-  --band-bg:var(--graphite); --band-ink:var(--milk); --band-ink-2:#C9C7BE; --band-pad:clamp(24px,4vw,48px);
-  --cta-btn:var(--lime); --cta-btn-ink:var(--lime-ink);
-  --arr-pad:7px; --arr-bg:var(--lime); --arr-ink:var(--lime-ink);
-}
-
-/* ── состояние 03 · BROTHER ── */
-:root[data-mode="brother"]{
-  --bg:var(--graphite); --surface:var(--graphite-soft); --line:var(--graphite-line);
-  --ink:var(--milk); --ink-2:#C9C7BE; --ink-3:#9C9A93;
-  --accent:var(--lime); --on-accent:var(--lime-ink);
-  --hint:var(--lime);
-  --photo:none;
-  --lift:0 22px 44px -26px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
-  --and-bg:var(--graphite-soft); --and-ink:var(--lime);
-  --band-bg:var(--graphite-soft); --band-ink:var(--milk); --band-ink-2:#C9C7BE; --band-pad:clamp(24px,4vw,48px);
-  --cta-btn:var(--lime); --cta-btn-ink:var(--lime-ink);
+  --and-bg:var(--graphite-soft);
+  --band-bg:var(--graphite-soft);
+  --arr-bg:var(--graphite); --arr-ink:var(--lime);
   --note-ink:var(--lime); --note-mark:transparent;
   color-scheme:dark;
 }
+/* Третье состояние пока повторяет палитру DAPI. Его отличие в содержании скрытой страницы.
+   Если понадобится развести их и по виду, переменные для BROTHER ставятся сюда. */
+:root[data-mode="brother"]{}
 
 /* ── основа ── */
 *,*::before,*::after{box-sizing:border-box}
@@ -317,10 +308,9 @@ a:hover > .more .ico,.more:hover .ico{transform:translateX(4px)}
   filter:var(--photo);transition:opacity .5s var(--ease)}
 .letter::after{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .5s var(--ease);
   background:rgba(23,23,23,.6)}
-.letter-nophoto::after{background:var(--graphite)}
+.letter-nophoto::after{background:var(--graphite-soft)}
 [data-mode="brother"] .letters{margin-inline:0}
 [data-mode="brother"] .letter{border-left-color:transparent}
-[data-mode="brother"] .letter-nophoto::after{background:var(--graphite-soft)}
 .letter-glyph{align-self:flex-start;font-family:var(--mark);font-size:var(--glyph);line-height:.74;
   transform-origin:left top;transition:color .4s var(--ease),transform .5s var(--ease)}
 .letter-cap{flex:1;display:grid;margin-top:clamp(18px,2.4vw,30px)}
@@ -347,7 +337,7 @@ a:hover > .more .ico,.more:hover .ico{transform:translateX(4px)}
 .dir .title{margin-top:16px;font-size:calc(var(--t-size) * 1.35)}
 .dir .text{margin-top:12px}
 .dir .more{margin-top:auto;padding-top:28px}
-.dir-logo{height:17px;width:auto}
+.dir-logo{height:17px;width:auto;filter:var(--logo-flip)}
 .dir-and{display:grid;place-items:center;min-height:clamp(200px,24vw,300px);border-radius:var(--r-card);
   background:var(--and-bg);overflow:clip}
 .dir-and span{font-family:var(--mark);font-size:clamp(110px,15vw,210px);line-height:.74;color:var(--and-ink)}
@@ -442,7 +432,7 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 .crew-item .note{font-size:1.3rem}
 
 /* ── «Вместе»: фокус смещается с Digital на People, поэтому мягче и без капса ── */
-[data-page="vmeste"]{--h-stretch:100%;--h-weight:700;--h-size:clamp(1.6rem,1.2rem + 1.4vw,2.4rem)}
+:root[data-page="vmeste"][data-mode]{--h-stretch:100%;--h-weight:700;--h-size:clamp(1.6rem,1.2rem + 1.4vw,2.4rem)}
 .vmeste-panel{padding:clamp(28px,5vw,64px);border-radius:var(--r-card);background:var(--lime);color:var(--lime-ink)}
 .vmeste-panel img{width:min(620px,100%)}
 .vmeste-panel p{margin-top:clamp(40px,8vw,120px);font-weight:650;font-size:clamp(1.3rem,1rem + 1.4vw,2.1rem);
@@ -468,7 +458,7 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 /* ── призыв и подвал ── */
 .cta{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px 48px;
   padding:var(--band-pad);border-radius:var(--r-card);background:var(--band-bg);color:var(--band-ink)}
-[data-mode="dapi"] .cta{--arr-bg:var(--graphite);--arr-ink:var(--lime)}
+.cta{--arr-bg:var(--graphite);--arr-ink:var(--lime)}
 .cta .sys{margin-bottom:14px;color:var(--band-ink-2)}
 .cta .h2{max-width:14em;font-size:clamp(1.7rem,1.1rem + 2vw,2.8rem)}
 .cta .text{margin-top:12px;color:var(--band-ink-2)}
