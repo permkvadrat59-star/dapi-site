@@ -4,7 +4,7 @@
 (() => {
   const root = document.documentElement;
   const KEY = 'dapi-mode';
-  const BRO = 'dapi-brother';
+  const PASS = 'dapi-brother-pass';
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -102,7 +102,9 @@
     if (root.dataset.page === 'brother') a.setAttribute('aria-current', 'page');
     nav.append(a);
   };
-  if (store.get(BRO) === '1' || root.dataset.page === 'brother') addSecret();
+  // пункт .brother виден только на самой скрытой странице, ярлыка в меню нет
+  if (root.dataset.page === 'brother') addSecret();
+  try { localStorage.removeItem('dapi-brother'); } catch { /* нет доступа */ }
   if (brand && root.dataset.page === 'index') {
     const letters = brand.querySelectorAll('.wordmark span');
     let clicks = 0;
@@ -113,7 +115,8 @@
       letters.forEach((l, i) => l.classList.toggle('on', i < clicks));
       clearTimeout(timer);
       if (clicks >= 4) {
-        store.set(BRO, '1');
+        // пропуск живет в этой вкладке, по прямой ссылке страница не открывается
+        try { sessionStorage.setItem(PASS, '1'); } catch { /* нет доступа */ }
         setTimeout(() => { location.href = 'brother.html#dapi'; }, 260);
         return;
       }
@@ -123,6 +126,47 @@
       }, 1600);
     });
   }
+
+  // маленький экран приложения идет за курсором в пределах своей строки
+  const hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  document.querySelectorAll('.apps > li').forEach(li => {
+    const peek = li.querySelector('.peek');
+    if (!peek) return;
+    const video = peek.querySelector('video');
+    const play = on => {
+      if (!video) return;
+      if (on) video.play().catch(() => {}); else video.pause();
+    };
+    if (!hover) {
+      if (video && 'IntersectionObserver' in window) {
+        new IntersectionObserver(es => es.forEach(en => play(en.isIntersecting)), { threshold: 0.5 }).observe(peek);
+      }
+      return;
+    }
+    let x = null;
+    let target = 0;
+    let raf = 0;
+    const step = () => {
+      raf = 0;
+      x += (target - x) * 0.2;
+      li.style.setProperty('--dx', x.toFixed(1) + 'px');
+      if (Math.abs(target - x) > 0.5) raf = requestAnimationFrame(step);
+    };
+    li.addEventListener('pointermove', e => {
+      const r = li.getBoundingClientRect();
+      const free = r.width - peek.offsetWidth;
+      const left = Math.max(0, Math.min(free, e.clientX - r.left + 28));
+      target = left - free;
+      if (x === null || calm) {
+        x = target;
+        li.style.setProperty('--dx', x + 'px');
+      } else if (!raf) {
+        raf = requestAnimationFrame(step);
+      }
+    });
+    li.addEventListener('pointerenter', () => play(true));
+    li.addEventListener('pointerleave', () => { play(false); x = null; });
+  });
 
   // на телефоне лента разделов прокручивается к текущему
   const current = nav && nav.querySelector('[aria-current="page"]');

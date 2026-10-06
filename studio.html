@@ -16,9 +16,9 @@
 <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/TikTokSans-300-900-cyrillic.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/DAPI-Display-Regular.woff2">
-<script>(function(){var d=document.documentElement,f=d.getAttribute('data-force'),h=location.hash.slice(1).toLowerCase(),m=null;try{m=localStorage.getItem('dapi-mode')}catch(e){}if(h!=='dapi'&&h!=='normal')h=null;d.setAttribute('data-mode',f||h||m||'normal')})()</script>
-<link rel="stylesheet" href="assets/css/site.css?v=4d87785b">
-<script src="assets/js/site.js?v=bd5e6f92" defer></script>
+<script>(function(){var d=document.documentElement,f=d.getAttribute('data-force'),k=null;if(d.getAttribute('data-page')==='brother'){try{k=sessionStorage.getItem('dapi-brother-pass')}catch(e){}if(k!=='1'){d.hidden=true;location.replace('index.html');return}}var h=location.hash.slice(1).toLowerCase(),m=null;try{m=localStorage.getItem('dapi-mode')}catch(e){}if(h!=='dapi'&&h!=='normal')h=null;d.setAttribute('data-mode',f||h||m||'normal')})()</script>
+<link rel="stylesheet" href="assets/css/site.css?v=aa42804b">
+<script src="assets/js/site.js?v=8fab7952" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">К содержанию</a>
@@ -115,9 +115,18 @@
             <p class="text">Свои продукты, которые держим сами.</p>
           </header>
           <ul class="apps">
-            <li><h3>Рассыльщик</h3><p>Собрали сами. Описание скоро.</p><span class="chip">Собран</span></li>
-            <li><h3>Вместе</h3><p>Приложение сообщества. Пока в планах.</p><span class="chip">Скоро</span></li>
-            <li><h3>Brother Team</h3><p class="hint">разгадай загадку сайта и найдешь приложение</p></li>
+            <li>
+              <h3>Рассыльщик</h3><p>Собрали сами. Описание скоро.</p><span class="chip">Собран</span>
+              <figure class="peek peek-stub" aria-hidden="true"><span class="peek-title">Рассыльщик</span><span class="label">Экран скоро</span></figure>
+            </li>
+            <li>
+              <h3>Вместе</h3><p>Приложение сообщества. Пока в планах.</p><span class="chip">Скоро</span>
+              <figure class="peek peek-vmeste" aria-hidden="true"><img src="assets/img/logo/vmeste.png" alt="" width="1000" height="114" loading="lazy" decoding="async"></figure>
+            </li>
+            <li>
+              <h3>Brother Team</h3><p class="hint">разгадай загадку сайта и найдешь приложение</p>
+              <figure class="peek peek-brother" aria-hidden="true"><span class="peek-mark"><span>D</span><span>A</span><span>P</span><span>I</span></span></figure>
+            </li>
           </ul>
         </div>
       </section>
