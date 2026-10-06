@@ -1,7 +1,5 @@
 /* DAPI · сайт
-   Палитра и роли цветов взяты из брендбука v0.1 (графит, молочный, серый, лайм).
-   NORMAL  монохром, лайм живет только в направлении «Вместе».
-   DAPI    графит, лайм становится общим акцентом, фото получают цвет. */
+   Палитра и роли цветов взяты из брендбука v0.1 (графит, молочный, серый, лайм). */
 
 /* ── шрифты (лежат рядом, без внешних запросов) ── */
 @font-face{font-family:'DAPI Display';font-style:normal;font-weight:400;font-display:block;
@@ -34,19 +32,23 @@
   src:url(../fonts/Neucha-400-latin.woff2) format('woff2');
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 
-/* ── токены ── */
+/* ══ DAPI · визуальный эксперимент v0.2 ══
+   Одно ядро, три состояния. Состояние задает атрибут data-mode на <html>.
+
+   ЯДРО (не меняется)   логотип, левая колонка, сетка и отступы, углы 14 px и пилюли,
+                        тонкие линии, моноширинные подписи, лайм как единственный акцент.
+   01 NORMAL            спокойное. Обычная ширина букв, строчные заголовки, без меток.
+   02 DAPI              выразительное. Широкий жирный капс, крупные буквы D A P I,
+                        системные подписи, лаймовые метки и геометрия.
+   03 BROTHER           скрытое. Те же выразительные формы на графите, фото в цвете.
+
+   Состояния отличаются только значениями переменных ниже. Разметка у всех одна. */
+
+/* ── ядро ── */
 :root{
   --graphite:#171717; --graphite-soft:#242422; --graphite-line:#333330;
   --milk:#F7F6F2; --milk-soft:#EEECE3; --milk-line:#E1DED2;
   --lime:#C7F36B; --lime-deep:#7FA22B; --lime-ink:#243014; --red:#C24A2A;
-
-  --bg:var(--milk); --surface:var(--milk-soft); --line:var(--milk-line);
-  --ink:var(--graphite); --ink-2:#4A4A47; --ink-3:#5F5E58;
-  --accent:var(--graphite); --on-accent:var(--milk);
-  --inverse-bg:var(--graphite); --inverse-ink:var(--milk); --inverse-ink-2:#C9C7BE;
-  --hint:var(--lime-deep);
-  --photo:grayscale(1) contrast(1.04);
-  --lift:0 22px 44px -28px rgba(23,23,23,.38);
 
   --r-card:14px; --r-pill:999px;
   --rail:264px;
@@ -56,27 +58,86 @@
   --mono:'IBM Plex Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
   --mark:'DAPI Display','TikTok Sans','Arial Black',sans-serif;
   --hand:'Neucha','Segoe Print','Comic Sans MS',cursive;
+  /* Заголовочный шрифт. Когда DAPI Display будет дорисован целиком,
+     достаточно поставить его сюда первым, остальное подхватится само. */
+  --display:var(--sans);
+}
+
+/* ── состояние 01 · NORMAL ── */
+:root{
+  --bg:var(--milk); --surface:var(--milk-soft); --line:var(--milk-line);
+  --ink:var(--graphite); --ink-2:#4A4A47; --ink-3:#5F5E58;
+  --accent:var(--graphite); --on-accent:var(--milk);
+  --hint:var(--lime-deep);
+  --photo:grayscale(1) contrast(1.04);
+  --lift:0 22px 44px -28px rgba(23,23,23,.38);
+
+  --spot:transparent;                 /* лаймовые метки системы выключены */
+  --sys:none;                         /* системные подписи скрыты */
+  --tick:0px;
+  --human:var(--sans);                /* «человеческая» строка набрана обычным шрифтом */
+
+  --d-stretch:100%; --d-weight:700; --d-case:none; --d-track:-.03em; --d-lh:1.04; --d-gap:0em;
+  --d-size:clamp(2.3rem,1.4rem + 3.4vw,4.2rem);
+  --d-size-long:clamp(1.8rem,7.4cqi,3.2rem);
+  --h-stretch:100%; --h-weight:700; --h-size:clamp(1.6rem,1.2rem + 1.4vw,2.4rem);
+  --t-size:1.3rem;
+  --glyph:clamp(48px,5.6vw,84px);
+  --band-mark:clamp(40px,4.4vw,60px);
+  --letter-h:0px;
+
+  --frame:inset(0 round 14px);
+  --frame-alt:inset(0 round 14px);
+  --blank-bg:var(--surface); --blank-ink:color-mix(in srgb,var(--ink) 16%,transparent); --blank-label:var(--ink-3);
+  --and-bg:var(--surface); --and-ink:var(--ink);
+  --band-bg:transparent; --band-ink:var(--ink); --band-ink-2:var(--ink-2); --band-pad:0px;
+  --cta-btn:var(--accent); --cta-btn-ink:var(--on-accent);
+  --arr-pad:0px; --arr-bg:transparent; --arr-ink:currentColor;
+  --note-ink:var(--ink); --note-mark:var(--spot);
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-mode="dapi"]){
-    --bg:var(--graphite); --surface:var(--graphite-soft); --line:var(--graphite-line);
-    --ink:var(--milk); --ink-2:#C9C7BE; --ink-3:#9C9A93;
-    --accent:var(--milk); --on-accent:var(--graphite);
-    --inverse-bg:var(--graphite-soft); --inverse-ink:var(--milk); --inverse-ink-2:#C9C7BE;
-    --hint:var(--lime);
-    --lift:0 22px 44px -26px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
-    color-scheme:dark;
-  }
+
+/* ── общее для выразительных состояний 02 и 03 ── */
+:root[data-mode="dapi"],:root[data-mode="brother"]{
+  --spot:var(--lime);
+  --sys:flex;
+  --tick:3px;
+  --human:var(--hand);
+
+  --d-stretch:125%; --d-weight:800; --d-case:uppercase; --d-track:-.012em; --d-lh:.98; --d-gap:.3em;
+  --d-size:clamp(2.5rem,1.1rem + 6.2vw,6rem);
+  --d-size-long:clamp(1.6rem,9cqi,3.4rem);
+  --h-stretch:118%; --h-weight:750; --h-size:clamp(1.4rem,1.05rem + 1.2vw,2.05rem);
+  --t-size:1.12rem;
+  --glyph:clamp(84px,11vw,172px);
+  --band-mark:clamp(56px,7.4vw,104px);
+  --letter-h:clamp(250px,25vw,340px);
+
+  --frame:polygon(7% 0,100% 7%,92% 100%,0 91%);
+  --frame-alt:polygon(0 6%,93% 0,100% 93%,8% 100%);
+  --blank-bg:var(--lime); --blank-ink:var(--lime-ink); --blank-label:var(--lime-ink);
 }
+
+/* ── состояние 02 · DAPI ── */
 :root[data-mode="dapi"]{
+  --and-bg:var(--graphite); --and-ink:var(--lime);
+  --band-bg:var(--graphite); --band-ink:var(--milk); --band-ink-2:#C9C7BE; --band-pad:clamp(24px,4vw,48px);
+  --cta-btn:var(--lime); --cta-btn-ink:var(--lime-ink);
+  --arr-pad:7px; --arr-bg:var(--lime); --arr-ink:var(--lime-ink);
+}
+
+/* ── состояние 03 · BROTHER ── */
+:root[data-mode="brother"]{
   --bg:var(--graphite); --surface:var(--graphite-soft); --line:var(--graphite-line);
   --ink:var(--milk); --ink-2:#C9C7BE; --ink-3:#9C9A93;
   --accent:var(--lime); --on-accent:var(--lime-ink);
-  --inverse-bg:var(--graphite-soft); --inverse-ink:var(--milk); --inverse-ink-2:#C9C7BE;
   --hint:var(--lime);
   --photo:none;
   --lift:0 22px 44px -26px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
+  --and-bg:var(--graphite-soft); --and-ink:var(--lime);
+  --band-bg:var(--graphite-soft); --band-ink:var(--milk); --band-ink-2:#C9C7BE; --band-pad:clamp(24px,4vw,48px);
+  --cta-btn:var(--lime); --cta-btn-ink:var(--lime-ink);
+  --note-ink:var(--lime); --note-mark:transparent;
   color-scheme:dark;
 }
 
@@ -109,17 +170,18 @@ button{font:inherit;color:inherit}
 .stamp{display:none;margin:18px 0 -6px;font-family:var(--hand);font-size:1.6rem;line-height:1;color:var(--red);
   transform:rotate(-3deg);transform-origin:left center;text-decoration:underline;text-decoration-thickness:2px;
   text-underline-offset:5px;white-space:nowrap}
-[data-mode="dapi"] .stamp{display:block}
+[data-mode="dapi"] .stamp,[data-mode="brother"] .stamp{display:block}
 .stamp.hit{animation:stamp .5s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes stamp{0%{transform:scale(2.2) rotate(-14deg);opacity:0}60%{transform:scale(.94) rotate(-2deg);opacity:1}
   100%{transform:scale(1) rotate(-3deg)}}
 
 .nav{display:grid;gap:2px;margin-top:40px}
-.nav a{margin-inline:-14px;padding:8px 14px;border-radius:var(--r-pill);font-weight:500;color:var(--ink-3);
+.nav a{position:relative;margin-inline:-14px;padding:8px 14px;border-radius:var(--r-pill);font-weight:500;color:var(--ink-3);
   text-decoration:none;transition:color .2s,background-color .2s}
 .nav a:hover{color:var(--ink);background:var(--surface)}
 .nav a[aria-current="page"]{color:var(--ink);font-weight:650;background:var(--surface)}
-[data-mode="dapi"] .nav a[aria-current="page"]{color:var(--lime)}
+.nav a[aria-current="page"]::after{content:"";position:absolute;left:14px;bottom:5px;width:18px;height:var(--tick);
+  background:var(--spot)}
 .nav a.nav-secret{font-family:var(--mono);font-size:.875rem;font-weight:400}
 
 .rail-foot{margin-top:auto;display:grid;gap:14px;justify-items:start}
@@ -129,6 +191,11 @@ button{font:inherit;color:inherit}
   transition:color .2s,background-color .2s}
 .mode button:hover{color:var(--ink)}
 .mode button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+/* третье состояние в переключателе видно только на скрытой странице */
+.mode button[data-set-mode="brother"]{display:none}
+[data-page="brother"] .mode button[data-set-mode="brother"]{display:block}
+.state{font:500 .72rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.rail-foot .state{margin-top:-6px}
 .share{display:inline-flex;align-items:center;gap:8px;border:0;background:none;padding:0;cursor:pointer;
   font-size:.9375rem;color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--line);
   text-underline-offset:4px;transition:color .2s}
@@ -136,21 +203,36 @@ button{font:inherit;color:inherit}
 .rail-phone{font-weight:650;text-decoration:none;font-variant-numeric:tabular-nums}
 .rail-phone:hover{text-decoration:underline;text-underline-offset:4px}
 .rail-city{font-size:.9375rem;color:var(--ink-3);margin-top:-10px}
-[data-force] .mode,[data-force] .share{display:none}
+[data-force] .share{display:none}
 
 main{min-width:0;padding:clamp(28px,4vw,56px) clamp(16px,4vw,56px) 0;view-transition-name:page}
 .page{max-width:1120px;margin-inline:auto}
 
 /* ── типографика ── */
-.display{font-weight:800;font-stretch:125%;text-transform:uppercase;line-height:.98;letter-spacing:-.012em;
-  font-size:clamp(2.5rem,1.1rem + 6.2vw,6rem);text-wrap:balance}
-.display-long{font-size:clamp(1.7rem,.8rem + 3.4vw,3.6rem);line-height:1.02}
-h2,.h2{font-weight:700;font-size:clamp(1.6rem,1.2rem + 1.4vw,2.4rem);line-height:1.08;letter-spacing:-.018em;text-wrap:balance}
+.display{font-family:var(--display);font-weight:var(--d-weight);font-stretch:var(--d-stretch);
+  text-transform:var(--d-case);line-height:var(--d-lh);letter-spacing:var(--d-track);font-size:var(--d-size);
+  text-wrap:balance}
+.display-long{font-size:var(--d-size-long)}
+.display-long span{display:block}
+.display-long span + span{margin-top:var(--d-gap)}
+h2,.h2{font-family:var(--display);font-weight:var(--h-weight);font-stretch:var(--h-stretch);font-size:var(--h-size);
+  line-height:1.08;letter-spacing:-.018em;text-wrap:balance}
 h3,.h3{font-weight:650;font-size:1.3rem;line-height:1.2;letter-spacing:-.01em}
+/* название блока: в NORMAL обычная строка, в выразительных состояниях широкий капс */
+.title{font-family:var(--display);font-weight:var(--d-weight);font-stretch:var(--d-stretch);text-transform:var(--d-case);
+  font-size:var(--t-size);line-height:1.12;letter-spacing:var(--d-track);text-wrap:balance}
 .lead{font-size:clamp(1.15rem,1.02rem + .55vw,1.45rem);line-height:1.42;color:var(--ink-2);max-width:34em;text-wrap:pretty}
 .text{color:var(--ink-2);max-width:38em;text-wrap:pretty}
 .text + .text{margin-top:.9em}
 .label{font:500 .78rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.tick::before{content:"";display:inline-block;width:var(--tick);height:.9em;margin-right:calc(var(--tick) * 3);
+  background:var(--spot);vertical-align:-.1em}
+/* системная подпись: живет только в выразительных состояниях */
+.sys{display:var(--sys);align-items:center;gap:10px;font:500 .75rem/1.3 var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+.sys-dot::before{content:"";flex:none;width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle,var(--graphite) 0 2px,var(--spot) 2.6px)}
+.human{font-family:var(--human)}
 
 /* ── кнопки и ссылки ── */
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
@@ -158,6 +240,8 @@ h3,.h3{font-weight:650;font-size:1.3rem;line-height:1.2;letter-spacing:-.01em}
   border:1px solid transparent;font-weight:650;font-size:1rem;line-height:1;text-decoration:none;white-space:nowrap;
   cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background-color .2s,border-color .2s}
 .btn .ico{transition:transform .25s var(--ease)}
+.btn .ico-arrow-right{box-sizing:content-box;padding:var(--arr-pad);margin-right:calc(var(--arr-pad) * -2);
+  border-radius:50%;background:var(--arr-bg);color:var(--arr-ink)}
 .btn:hover{transform:translateY(-2px)}
 .btn:hover .ico-arrow-right{transform:translateX(3px)}
 .btn:active{transform:scale(.98)}
@@ -175,9 +259,11 @@ a:hover > .more .ico,.more:hover .ico{transform:translateX(4px)}
 /* ── секции ── */
 .sec{padding-block:clamp(48px,7vw,92px);border-top:1px solid var(--line)}
 .sec:first-child{border-top:0;padding-top:clamp(4px,1.6vw,20px)}
+.sec-tight{padding-block:clamp(28px,4vw,48px)}
 .sec-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px;
   margin-bottom:clamp(24px,3.4vw,40px)}
 .sec-head .lead{margin-top:10px;font-size:1.125rem}
+.sec-head .sys,.page-head > .sys,.cols > header .sys{margin-bottom:14px}
 .split{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:clamp(32px,4.4vw,64px);align-items:start}
 .split-even{grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr)}
 .cols{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:clamp(24px,4.4vw,64px);align-items:start}
@@ -185,56 +271,101 @@ a:hover > .more .ico,.more:hover .ico{transform:translateX(4px)}
 .cols > header .text{margin-top:12px}
 .page-head .display + .split,.page-head .display + .lead{margin-top:clamp(24px,3.4vw,40px)}
 
-/* ── факты справа ── */
+/* ── факты ── */
 .facts > div{padding:14px 0;border-top:1px solid var(--line)}
 .facts > div:last-child{border-bottom:1px solid var(--line)}
 .facts dt{font-weight:700;font-size:1.3rem;line-height:1.2;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .facts dd{font-size:.9375rem;color:var(--ink-3)}
 
-/* ── четыре буквы: в NORMAL расшифровка названия, в DAPI люди ── */
-.letters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:clamp(40px,5.6vw,72px)}
-.letter{position:relative;isolation:isolate;display:flex;flex-direction:column;
-  aspect-ratio:3/4;padding:20px;border-radius:var(--r-card);background:var(--surface);overflow:clip}
-.letter-photo{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:0;
-  transition:opacity .7s var(--ease)}
-.letter::after{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .7s var(--ease);
-  background:linear-gradient(to top,rgba(23,23,23,.94) 0%,rgba(23,23,23,.62) 36%,rgba(23,23,23,0) 68%),
-    linear-gradient(to bottom,rgba(23,23,23,.5) 0%,rgba(23,23,23,0) 34%)}
-[data-mode="dapi"] .letter-photo,[data-mode="dapi"] .letter::after{opacity:1}
-.letter-glyph{align-self:flex-start;font-family:var(--mark);font-size:clamp(72px,10.4vw,168px);line-height:.74;
-  transform-origin:left top;transition:color .5s var(--ease),transform .7s var(--ease)}
-[data-mode="dapi"] .letter-glyph{color:var(--lime);transform:scale(.36)}
-.letter-cap{display:grid;margin-top:auto;padding-top:18px}
-.face{grid-area:1/1;align-self:end;transition:opacity .4s var(--ease)}
-.face p{margin-top:4px;font-size:.9375rem;line-height:1.45;color:var(--ink-3)}
-:root:not([data-mode="dapi"]) .face-dapi,[data-mode="dapi"] .face-normal{visibility:hidden;opacity:0}
-[data-mode="dapi"] .face p{color:#C9C7BE}
+/* ── первый экран: слева система, справа люди ── */
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr);gap:clamp(24px,4vw,56px);align-items:center}
+.hero-text{container-type:inline-size}
+.hero-text .sys{margin-bottom:18px}
+.hero-text .lead{margin-top:clamp(18px,2.4vw,28px)}
+.people{justify-self:end;width:min(100%,440px);padding-right:clamp(18px,3vw,44px)}
+.people-top{justify-content:flex-end;margin-bottom:12px}
+.people-stage{position:relative}
+.people-frame{position:relative;display:block;width:100%;aspect-ratio:4/5;padding:0;border:0;background:var(--surface);
+  cursor:pointer;clip-path:var(--frame)}
+.people-frame > [data-slide]{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
+  filter:var(--photo);transition:opacity .9s var(--ease)}
+.people-frame > .is-on{opacity:1}
+.people-blank{display:grid;place-items:center;background:var(--blank-bg);font-family:var(--mark);
+  font-size:clamp(120px,16vw,220px);line-height:.74;color:var(--blank-ink)}
+/* лаймовая фигура под углом ноги буквы A: частично ложится на фото */
+.people-shape{position:absolute;z-index:1;inset:30% -11% -5% 50%;background:var(--spot);
+  clip-path:polygon(22% 0,100% 5%,80% 100%,0 88%);mix-blend-mode:multiply;pointer-events:none}
+.people-cap{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;
+  font:500 .78rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 
-/* ── два направления ── */
-.duo{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px}
-.panel{display:flex;flex-direction:column;align-items:flex-start;min-height:340px;padding:clamp(24px,3vw,36px);
-  border-radius:var(--r-card);text-decoration:none;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
-.panel:hover{transform:translateY(-3px);box-shadow:var(--lift)}
-.panel .h2{margin-top:14px;max-width:16em}
-.panel p.text{margin-top:14px}
-.panel .more{margin-top:auto;padding-top:32px}
-.panel-studio{background:var(--inverse-bg);color:var(--inverse-ink)}
-.panel-studio .label,.panel-studio .text{color:var(--inverse-ink-2)}
-.panel-vmeste{background:var(--lime);color:var(--lime-ink)}
-.panel-vmeste .text{color:var(--lime-ink)}
-.panel-vmeste img{width:min(280px,72%)}
-.panel-vmeste .h2{margin-top:28px}
+/* ── полоса с логотипом ── */
+.band{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(24px,3.4vw,44px) clamp(24px,4vw,56px);align-items:center}
+.band-mark .wordmark{font-size:var(--band-mark);padding-top:0}
+.band-mark .label{margin-top:14px}
+.band .text{padding-left:clamp(20px,3vw,40px);border-left:1px solid var(--line);font-size:1rem}
+.facts-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding-top:clamp(20px,2.6vw,32px);
+  border-top:1px solid var(--line)}
+.facts-row > div,.facts-row > div:last-child{padding:2px 0 2px 24px;border:0;border-left:1px solid var(--line)}
+.facts-row > div:first-child{padding-left:0;border-left:0}
+
+/* ── четыре буквы: расшифровка названия, за каждой буквой человек ── */
+.letters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-inline:calc(clamp(14px,2vw,28px) * -1)}
+.letter{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:var(--letter-h);
+  padding:clamp(14px,2vw,28px);border-left:1px solid var(--line);overflow:clip;cursor:default}
+.letter:first-child{border-left-color:transparent}
+.letter-photo{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:0;
+  filter:var(--photo);transition:opacity .5s var(--ease)}
+.letter::after{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .5s var(--ease);
+  background:rgba(23,23,23,.6)}
+.letter-nophoto::after{background:var(--graphite)}
+[data-mode="brother"] .letters{margin-inline:0}
+[data-mode="brother"] .letter{border-left-color:transparent}
+[data-mode="brother"] .letter-nophoto::after{background:var(--graphite-soft)}
+.letter-glyph{align-self:flex-start;font-family:var(--mark);font-size:var(--glyph);line-height:.74;
+  transform-origin:left top;transition:color .4s var(--ease),transform .5s var(--ease)}
+.letter-cap{flex:1;display:grid;margin-top:clamp(18px,2.4vw,30px)}
+.face{grid-area:1/1;align-self:start;transition:opacity .35s var(--ease)}
+.face p{margin-top:6px;font-size:.9375rem;line-height:1.45;color:var(--ink-3)}
+.face-dapi{align-self:end;visibility:hidden;opacity:0}
+/* в DAPI человек открывается при наведении или касании, в третьем состоянии виден сразу */
+[data-mode="dapi"] .letter:is(:hover,.is-person) .letter-photo,
+[data-mode="dapi"] .letter:is(:hover,.is-person)::after,
+[data-mode="brother"] .letter .letter-photo,
+[data-mode="brother"] .letter::after{opacity:1}
+[data-mode="dapi"] .letter:is(:hover,.is-person) .letter-glyph,
+[data-mode="brother"] .letter .letter-glyph{color:var(--lime);transform:scale(.4)}
+[data-mode="dapi"] .letter:is(:hover,.is-person) .face-normal,
+[data-mode="brother"] .letter .face-normal{visibility:hidden;opacity:0}
+[data-mode="dapi"] .letter:is(:hover,.is-person) .face-dapi,
+[data-mode="brother"] .letter .face-dapi{visibility:visible;opacity:1;color:var(--milk)}
+[data-mode="dapi"] .letter:is(:hover,.is-person) .face-dapi p,
+[data-mode="brother"] .letter .face-dapi p{color:#C9C7BE}
+
+/* ── два направления и буква A между ними ── */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.6fr) minmax(0,1fr);gap:clamp(20px,3.4vw,48px)}
+.dir{display:flex;flex-direction:column;align-items:flex-start;padding-block:4px;text-decoration:none}
+.dir .title{margin-top:16px;font-size:calc(var(--t-size) * 1.35)}
+.dir .text{margin-top:12px}
+.dir .more{margin-top:auto;padding-top:28px}
+.dir-logo{height:17px;width:auto}
+.dir-and{display:grid;place-items:center;min-height:clamp(200px,24vw,300px);border-radius:var(--r-card);
+  background:var(--and-bg);overflow:clip}
+.dir-and span{font-family:var(--mark);font-size:clamp(110px,15vw,210px);line-height:.74;color:var(--and-ink)}
 
 /* ── кейсы ── */
-.shot{border-radius:var(--r-card);overflow:clip;border:1px solid var(--line);background:var(--surface)}
+.shot{position:relative;border-radius:var(--r-card);overflow:clip;border:1px solid var(--line);background:var(--surface)}
 .shot img{width:100%;transition:transform .8s var(--ease)}
 a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 .cases-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 12px}
 .case{display:block;text-decoration:none}
 .case-lg{grid-column:1/-1}
-.case-meta{margin-top:14px}
-.case-meta p{margin-top:2px;font-size:.9375rem;color:var(--ink-3)}
-.case-full h2{margin-bottom:6px}
+.case-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 16px;align-items:baseline;margin-top:14px}
+.case-num{font:500 .78rem/1.3 var(--mono);letter-spacing:.08em;color:var(--ink-3)}
+.case-meta p:not(.case-num){grid-column:2;font-size:.9375rem;color:var(--ink-3)}
+.case-go{position:absolute;right:12px;top:12px;display:var(--sys);align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;
+  background:var(--spot);color:var(--lime-ink);opacity:0;scale:.7;transition:opacity .25s var(--ease),scale .35s var(--ease)}
+.case:hover .case-go{opacity:1;scale:1}
+.case-full h2{margin:10px 0 6px}
 .case-kind{color:var(--ink-3)}
 .was-now{margin:24px 0 22px}
 .was-now > div{padding:14px 0;border-top:1px solid var(--line)}
@@ -251,8 +382,8 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 .rows .step{display:block;margin-bottom:6px;font:500 .78rem/1.3 var(--mono);letter-spacing:.08em;color:var(--ink-3)}
 
 /* ── свои приложения ── */
-.apps > li{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto;gap:6px 32px;align-items:baseline;
-  padding:20px 0;border-top:1px solid var(--line)}
+.apps > li{position:relative;display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto;gap:6px 32px;
+  align-items:baseline;padding:20px 0;border-top:1px solid var(--line)}
 .apps > li:last-child{border-bottom:1px solid var(--line)}
 .apps p{color:var(--ink-2);max-width:34em}
 .apps p.hint,.hint{font:400 .8125rem/1.5 var(--mono);letter-spacing:.02em;color:var(--ink-3)}
@@ -260,7 +391,6 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
   border-radius:var(--r-pill);font:500 .78rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;
   color:var(--ink-3);white-space:nowrap}
 /* маленький экран приложения: появляется при наведении в пределах своей строки */
-.apps > li{position:relative}
 .peek{position:absolute;z-index:5;top:50%;right:0;width:clamp(210px,21vw,280px);aspect-ratio:16/10;margin:0;
   border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);overflow:clip;
   box-shadow:var(--lift);pointer-events:none;opacity:0;translate:var(--dx,0px) -50%;scale:.9;rotate:-2deg;
@@ -283,42 +413,45 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
     opacity:1;translate:none;scale:1;rotate:0deg;box-shadow:none}
   .peek-mark span{animation:peek-tap 2.6s var(--ease) infinite both}
 }
-@media (prefers-reduced-motion:reduce){
-  .peek-mark{color:var(--lime)}
-}
 .found{display:grid;justify-items:start;gap:14px;padding:clamp(24px,4vw,48px);border-radius:var(--r-card);
   background:var(--surface)}
 .found .display{color:var(--lime)}
 
-/* ── команда ── */
-.people{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:36px 12px}
-.person-photo{position:relative;border-radius:var(--r-card);overflow:clip;background:var(--surface)}
-.person-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:var(--photo);
-  transition:filter .7s var(--ease),transform .8s var(--ease)}
-.person:hover .person-photo img{transform:scale(1.025)}
-.person-letter{position:absolute;left:14px;bottom:12px;font-family:var(--mark);font-size:56px;line-height:.8;
-  color:var(--lime);opacity:0;transition:opacity .5s var(--ease)}
-[data-mode="dapi"] .person-letter{opacity:1}
-.person-empty{display:grid;place-items:center;aspect-ratio:3/4}
-.person-empty-glyph{font-family:var(--mark);font-size:clamp(64px,9vw,132px);line-height:.74;
-  color:color-mix(in srgb,var(--ink) 16%,transparent);transition:color .5s var(--ease)}
-[data-mode="dapi"] .person-empty-glyph{color:var(--lime)}
-.person-empty .label{position:absolute;left:14px;bottom:12px}
-.person figcaption{margin-top:14px}
-.person figcaption p{margin-top:4px;font-size:.9375rem;line-height:1.45;color:var(--ink-3)}
+/* ── команда: у каждого своя буква ── */
+.crew{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-inline:calc(clamp(14px,2vw,28px) * -1)}
+.crew-item{padding:4px clamp(14px,2vw,28px) 8px;border-left:1px solid var(--line)}
+.crew-item:first-child{border-left-color:transparent}
+.crew-glyph{display:block;font-family:var(--mark);font-size:var(--glyph);line-height:.74}
+.crew-photo{position:relative;display:grid;place-items:center;margin-top:clamp(18px,2.4vw,28px);aspect-ratio:3/4;
+  background:var(--blank-bg);clip-path:var(--frame)}
+.crew-item:nth-child(even) .crew-photo{clip-path:var(--frame-alt)}
+.crew-photo img{width:100%;height:100%;object-fit:cover;filter:var(--photo);
+  transition:filter .6s var(--ease),transform .8s var(--ease)}
+.crew-item:hover .crew-photo img{transform:scale(1.03)}
+[data-mode="dapi"] .crew-item:hover .crew-photo img{filter:none}
+.crew-photo .label{color:var(--blank-label)}
+.crew-item .title{margin-top:18px}
+.crew-item .title + p{margin-top:6px;font-size:.9375rem;line-height:1.45;color:var(--ink-3)}
 
-/* ── слой DAPI: рукописные пометки ── */
+/* ── человеческий слой: пометки от руки ── */
 .dapi-only{display:none}
-[data-mode="dapi"] .dapi-only{display:block}
-.note{margin-top:16px;font-family:var(--hand);font-size:1.45rem;line-height:1.12;color:var(--lime);
+[data-mode="dapi"] .dapi-only,[data-mode="brother"] .dapi-only{display:block}
+.note{margin-top:16px;font-family:var(--hand);font-size:1.45rem;line-height:1.25;color:var(--note-ink);
   transform:rotate(-1.5deg);transform-origin:left center;max-width:16em}
-.person figcaption p.note{margin-top:12px;font-size:1.3rem;line-height:1.12;color:var(--lime)}
+.note span{padding:0 .12em;background:linear-gradient(to top,var(--note-mark) 0 44%,transparent 44%);
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+.crew-item .note{font-size:1.3rem}
 
-/* ── «Вместе» ── */
+/* ── «Вместе»: фокус смещается с Digital на People, поэтому мягче и без капса ── */
+[data-page="vmeste"]{--h-stretch:100%;--h-weight:700;--h-size:clamp(1.6rem,1.2rem + 1.4vw,2.4rem)}
 .vmeste-panel{padding:clamp(28px,5vw,64px);border-radius:var(--r-card);background:var(--lime);color:var(--lime-ink)}
 .vmeste-panel img{width:min(620px,100%)}
 .vmeste-panel p{margin-top:clamp(40px,8vw,120px);font-weight:650;font-size:clamp(1.3rem,1rem + 1.4vw,2.1rem);
   line-height:1.15;letter-spacing:-.015em;max-width:18em;text-wrap:balance}
+.vmeste-tone{margin-top:20px;font-family:var(--human);font-size:clamp(1.15rem,1rem + .7vw,1.6rem);line-height:1.3;
+  color:var(--ink-2);max-width:26em}
+[data-mode="dapi"] .vmeste-tone,[data-mode="brother"] .vmeste-tone{color:var(--note-ink);transform:rotate(-1deg);
+  transform-origin:left center}
 
 /* ── контакты ── */
 .contact-person{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--line)}
@@ -334,10 +467,14 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 .aside-block p:not(.label){color:var(--ink-2)}
 
 /* ── призыв и подвал ── */
-.cta{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px 48px}
-.cta .h2{max-width:14em;font-size:clamp(1.8rem,1.2rem + 2.2vw,3rem)}
-.cta .text{margin-top:12px}
+.cta{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px 48px;
+  padding:var(--band-pad);border-radius:var(--r-card);background:var(--band-bg);color:var(--band-ink)}
+[data-mode="dapi"] .cta{--arr-bg:var(--graphite);--arr-ink:var(--lime)}
+.cta .sys{margin-bottom:14px;color:var(--band-ink-2)}
+.cta .h2{max-width:14em;font-size:clamp(1.7rem,1.1rem + 2vw,2.8rem)}
+.cta .text{margin-top:12px;color:var(--band-ink-2)}
 .cta .actions{margin-top:0;align-items:center;gap:10px 24px}
+.cta .btn-primary{background:var(--cta-btn);color:var(--cta-btn-ink)}
 .cta-phone{font-weight:650;text-decoration:none;font-variant-numeric:tabular-nums;white-space:nowrap}
 .cta-phone:hover{text-decoration:underline;text-underline-offset:4px}
 
@@ -349,7 +486,7 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 .foot a{text-decoration:none;color:var(--ink-2)}
 .foot a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 .foot-contact > a{font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}
-.foot-legal{grid-column:1/-1}
+.foot-legal{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
 
 /* ── движение ── */
 @view-transition{navigation:auto}
@@ -357,10 +494,19 @@ a:hover > .shot img,.shot:hover img{transform:scale(1.025)}
 ::view-transition-new(page){animation:page-in .42s var(--ease) both}
 @keyframes page-out{to{opacity:0}}
 @keyframes page-in{from{opacity:0;transform:translateY(10px)}}
-/* смена режима расходится кругом от переключателя */
-html.mode-switching .rail,html.mode-switching main{view-transition-name:none}
-html.mode-switching::view-transition-old(root),html.mode-switching::view-transition-new(root){animation:none;mix-blend-mode:normal}
-html.mode-switching::view-transition-new(root){z-index:2}
+/* Смена состояния. У ключевых объектов есть имена, поэтому браузер не подменяет картинку,
+   а перетягивает каждый объект из старой формы в новую: заголовок расширяется,
+   кадр с человеком скашивается, буквы вырастают. */
+.page-head .display{view-transition-name:vt-title}
+.people-stage{view-transition-name:vt-people}
+.band-mark .wordmark{view-transition-name:vt-band}
+:is(.letter,.crew-item):nth-child(1) :is(.letter-glyph,.crew-glyph){view-transition-name:vt-l1}
+:is(.letter,.crew-item):nth-child(2) :is(.letter-glyph,.crew-glyph){view-transition-name:vt-l2}
+:is(.letter,.crew-item):nth-child(3) :is(.letter-glyph,.crew-glyph){view-transition-name:vt-l3}
+:is(.letter,.crew-item):nth-child(4) :is(.letter-glyph,.crew-glyph){view-transition-name:vt-l4}
+html.mode-switching main{view-transition-name:none}
+html.mode-switching::view-transition-group(*){animation-duration:.6s;animation-timing-function:var(--ease)}
+html.mode-switching::view-transition-old(*),html.mode-switching::view-transition-new(*){animation-duration:.6s}
 
 .rv{opacity:0;transform:translateY(16px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 .rv.in{opacity:1;transform:none}
@@ -370,6 +516,7 @@ html.mode-switching::view-transition-new(root){z-index:2}
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
     transition-duration:.01ms !important;scroll-behavior:auto !important}
   .rv{opacity:1;transform:none}
+  .peek-mark{color:var(--lime)}
 }
 
 /* ── адаптив ── */
@@ -385,9 +532,9 @@ html.mode-switching::view-transition-new(root){z-index:2}
   .rail{position:sticky;top:0;z-index:20;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;
     gap:0 12px;padding:10px 16px 0;border-right:0;border-bottom:1px solid var(--line)}
   .wordmark{font-size:30px}
-  .brand-sub,.share,.rail-phone,.rail-city{display:none}
+  .brand-sub,.share,.rail-phone,.rail-city,.rail-foot .state{display:none}
   .stamp{position:absolute;left:16px;top:43px;margin:0;font-size:1.05rem;text-underline-offset:3px}
-  [data-mode="dapi"] .nav{margin-top:32px}
+  [data-mode="dapi"] .nav,[data-mode="brother"] .nav{margin-top:32px}
   .rail-foot{margin:0 0 0 auto}
   .mode button{padding:7px 11px}
   .nav{order:3;flex-basis:100%;display:flex;gap:2px;margin:8px -16px 0;padding:0 16px 8px;overflow-x:auto;
@@ -395,14 +542,26 @@ html.mode-switching::view-transition-new(root){z-index:2}
   .nav::-webkit-scrollbar{display:none}
   .nav a{margin:0;padding:7px 12px;white-space:nowrap;font-size:1rem}
   .nav a:first-child{margin-left:-12px}
+  .nav a[aria-current="page"]::after{left:12px;bottom:3px}
+  .hero-grid{grid-template-columns:minmax(0,1fr)}
+  .people{justify-self:start;width:min(90%,400px);margin-top:12px;padding-right:0}
+  .people-top{justify-content:flex-start}
   .duo{grid-template-columns:minmax(0,1fr)}
-  .panel{min-height:280px}
+  .dir-and{min-height:150px}
+  .dir-and span{font-size:104px}
+  .dir .more{padding-top:18px}
   .foot{grid-template-columns:repeat(2,minmax(0,1fr))}
   .foot-brand{grid-column:1/-1}
 }
 @media (max-width:720px){
-  .letters,.people{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .letter{padding:14px;aspect-ratio:auto;min-height:250px}
+  .band{grid-template-columns:minmax(0,1fr)}
+  .band .text{padding-left:0;border-left:0}
+  .facts-row{grid-template-columns:minmax(0,1fr)}
+  .facts-row > div,.facts-row > div:last-child{padding:12px 0;border-left:0;border-top:1px solid var(--line)}
+  .letters,.crew{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:0}
+  .letter:nth-child(odd),.crew-item:nth-child(odd){border-left-color:transparent}
+  .letter:nth-child(n+3){border-top:1px solid var(--line)}
+  .crew-item:nth-child(n+3){margin-top:28px}
   .cases-grid{grid-template-columns:minmax(0,1fr)}
   .rows > li,.rows > div{grid-template-columns:minmax(0,1fr)}
   .apps > li{grid-template-columns:minmax(0,1fr) auto}

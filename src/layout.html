@@ -31,10 +31,12 @@
 {{nav}}
     </nav>
     <div class="rail-foot">
-      <div class="mode" role="group" aria-label="Режим сайта">
+      <div class="mode" role="group" aria-label="Состояние сайта">
         <button type="button" data-set-mode="normal" aria-pressed="true">Normal</button>
         <button type="button" data-set-mode="dapi" aria-pressed="false">DAPI</button>
+        <button type="button" data-set-mode="brother" aria-pressed="false">Brother</button>
       </div>
+      <p class="state" data-state>State 01 / 03</p>
       <button class="share" type="button" data-share>{{icon:link-simple}}<span data-label>Ссылка на этот режим</span></button>
       <a class="rail-phone" href="tel:+79922266008">+7 992 226-60-08</a>
       <p class="rail-city">Пермь</p>
@@ -57,7 +59,7 @@
           <p><a href="mailto:i@frog-ami.ru">i@frog-ami.ru</a></p>
           <p>Пермь, работаем удаленно по России</p>
         </div>
-        <p class="foot-legal">© {{year}} DAPI</p>
+        <p class="foot-legal"><span>© {{year}} DAPI</span><span class="state" data-state>State 01 / 03</span></p>
       </footer>
     </div>
   </main>

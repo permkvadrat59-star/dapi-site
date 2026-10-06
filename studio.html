@@ -17,8 +17,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/TikTokSans-300-900-cyrillic.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/DAPI-Display-Regular.woff2">
 <script>(function(){var d=document.documentElement,f=d.getAttribute('data-force'),k=null;if(d.getAttribute('data-page')==='brother'){try{k=sessionStorage.getItem('dapi-brother-pass')}catch(e){}if(k!=='1'){d.hidden=true;location.replace('index.html');return}}var h=location.hash.slice(1).toLowerCase(),m=null;try{m=localStorage.getItem('dapi-mode')}catch(e){}if(h!=='dapi'&&h!=='normal')h=null;d.setAttribute('data-mode',f||h||m||'normal')})()</script>
-<link rel="stylesheet" href="assets/css/site.css?v=aa42804b">
-<script src="assets/js/site.js?v=8fab7952" defer></script>
+<link rel="stylesheet" href="assets/css/site.css?v=a6d6f7c4">
+<script src="assets/js/site.js?v=f9b7b3df" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">К содержанию</a>
@@ -36,10 +36,12 @@
       <a href="contacts.html">Контакты</a>
     </nav>
     <div class="rail-foot">
-      <div class="mode" role="group" aria-label="Режим сайта">
+      <div class="mode" role="group" aria-label="Состояние сайта">
         <button type="button" data-set-mode="normal" aria-pressed="true">Normal</button>
         <button type="button" data-set-mode="dapi" aria-pressed="false">DAPI</button>
+        <button type="button" data-set-mode="brother" aria-pressed="false">Brother</button>
       </div>
+      <p class="state" data-state>State 01 / 03</p>
       <button class="share" type="button" data-share><svg class="ico ico-link-simple" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M165.66,90.34a8,8,0,0,1,0,11.32l-64,64a8,8,0,0,1-11.32-11.32l64-64A8,8,0,0,1,165.66,90.34ZM215.6,40.4a56,56,0,0,0-79.2,0L106.34,70.45a8,8,0,0,0,11.32,11.32l30.06-30a40,40,0,0,1,56.57,56.56l-30.07,30.06a8,8,0,0,0,11.31,11.32L215.6,119.6a56,56,0,0,0,0-79.2ZM138.34,174.22l-30.06,30.06a40,40,0,1,1-56.56-56.57l30.05-30.05a8,8,0,0,0-11.32-11.32L40.4,136.4a56,56,0,0,0,79.2,79.2l30.06-30.07a8,8,0,0,0-11.32-11.31Z"/></svg><span data-label>Ссылка на этот режим</span></button>
       <a class="rail-phone" href="tel:+79922266008">+7 992 226-60-08</a>
       <p class="rail-city">Пермь</p>
@@ -48,6 +50,7 @@
   <main id="main">
     <div class="page">
       <section class="sec page-head">
+        <p class="sys sys-dot">D / Digital</p>
         <h1 class="display">Студия</h1>
         <div class="split">
           <div>
@@ -68,6 +71,7 @@
       <section class="sec">
         <div class="cols">
           <header>
+            <p class="sys">01 / 04</p>
             <h2>Сайты</h2>
             <p class="text">Верстаем в коде, без конструкторов. Правка занимает часы, и сайт не упирается в чужие лимиты.</p>
           </header>
@@ -83,6 +87,7 @@
       <section class="sec">
         <div class="cols">
           <header>
+            <p class="sys">02 / 04</p>
             <h2>Автоматизации</h2>
             <p class="text">Рутина, которая делается сама.</p>
           </header>
@@ -97,6 +102,7 @@
       <section class="sec">
         <div class="cols">
           <header>
+            <p class="sys">03 / 04</p>
             <h2>ИИ и LLM</h2>
             <p class="text">То, что уже стоит в работе.</p>
           </header>
@@ -111,6 +117,7 @@
       <section class="sec">
         <div class="cols">
           <header>
+            <p class="sys">04 / 04</p>
             <h2>Приложения</h2>
             <p class="text">Свои продукты, которые держим сами.</p>
           </header>
@@ -134,6 +141,7 @@
       <section class="sec">
         <div class="cta">
           <div>
+            <p class="sys sys-dot">I / Initiative</p>
             <h2 class="h2">Пришлите адрес сайта, вернем разбор</h2>
             <p class="text">Смотрим сайт, собираем список поломок, называем срок и цену одной страницей.</p>
           </div>
@@ -162,7 +170,7 @@
           <p><a href="mailto:i@frog-ami.ru">i@frog-ami.ru</a></p>
           <p>Пермь, работаем удаленно по России</p>
         </div>
-        <p class="foot-legal">© 2026 DAPI</p>
+        <p class="foot-legal"><span>© 2026 DAPI</span><span class="state" data-state>State 01 / 03</span></p>
       </footer>
     </div>
   </main>

@@ -1,10 +1,13 @@
 /* DAPI · поведение сайта
-   Режим NORMAL или DAPI живет в адресе (#dapi, #normal) и в localStorage,
-   поэтому сохраняется между страницами и им можно поделиться ссылкой. */
+   У сайта три состояния одной системы: NORMAL, DAPI и скрытое BROTHER.
+   NORMAL и DAPI переключаются в левой колонке, живут в адресе (#normal, #dapi)
+   и в localStorage, поэтому сохраняются между страницами и ими можно поделиться.
+   BROTHER существует только на скрытой странице и включается четырьмя кликами по логотипу. */
 (() => {
   const root = document.documentElement;
   const KEY = 'dapi-mode';
   const PASS = 'dapi-brother-pass';
+  const STATES = { normal: '01', dapi: '02', brother: '03' };
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -16,45 +19,43 @@
     return h === 'dapi' || h === 'normal' ? h : null;
   };
 
-  // фраза есть только в режиме DAPI, в разметке NORMAL ее нет вовсе
+  // фраза есть только в выразительных состояниях, в разметке NORMAL ее нет вовсе
   const STAMP = 'хуйню не кодим';
   const stamps = document.querySelectorAll('[data-stamp]');
   const buttons = document.querySelectorAll('[data-set-mode]');
+  const readouts = document.querySelectorAll('[data-state]');
   const inner = document.querySelectorAll('a[href$=".html"]:not([target])');
 
   function paint(mode) {
     root.dataset.mode = mode;
     buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setMode === mode)));
-    stamps.forEach(s => { s.textContent = mode === 'dapi' ? STAMP : ''; });
+    stamps.forEach(s => { s.textContent = mode === 'normal' ? '' : STAMP; });
+    readouts.forEach(r => { r.textContent = `State ${STATES[mode]} / 03`; });
     inner.forEach(a => {
       const base = a.getAttribute('href').split('#')[0];
       a.setAttribute('href', mode === 'dapi' ? base + '#dapi' : base);
     });
   }
 
-  function setMode(mode, origin) {
-    if (mode === root.dataset.mode) return;
+  function setMode(mode) {
+    if (mode === root.dataset.mode || mode === 'brother') return;
+    if (forced) {
+      // из третьего состояния выход ведет на главную в выбранном состоянии
+      store.set(KEY, mode);
+      location.href = 'index.html#' + mode;
+      return;
+    }
     const apply = () => {
       paint(mode);
-      if (!forced) store.set(KEY, mode);
+      store.set(KEY, mode);
       history.replaceState(null, '', location.pathname + location.search + '#' + mode);
     };
-    if (calm || !document.startViewTransition || !origin) {
+    if (calm || !document.startViewTransition) {
       apply();
     } else {
-      const r = origin.getBoundingClientRect();
-      const x = r.left + r.width / 2;
-      const y = r.top + r.height / 2;
-      const far = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      // объекты с именами перетекают из старой формы в новую, см. блок «движение» в стилях
       root.classList.add('mode-switching');
-      const vt = document.startViewTransition(apply);
-      vt.ready.then(() => {
-        root.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${far}px at ${x}px ${y}px)`] },
-          { duration: 620, easing: 'cubic-bezier(.2,.7,.2,1)', pseudoElement: '::view-transition-new(root)' },
-        );
-      }).catch(() => {});
-      vt.finished.finally(() => root.classList.remove('mode-switching'));
+      document.startViewTransition(apply).finished.finally(() => root.classList.remove('mode-switching'));
     }
     if (mode === 'dapi') {
       stamps.forEach(s => {
@@ -68,7 +69,7 @@
   paint(forced || fromHash() || store.get(KEY) || 'normal');
   if (fromHash() && !forced) store.set(KEY, fromHash());
 
-  buttons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.setMode, b)));
+  buttons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.setMode)));
   addEventListener('hashchange', () => { const m = fromHash(); if (m && !forced) setMode(m); });
 
   // короткая подпись на кнопке после копирования
@@ -93,18 +94,15 @@
   // четыре клика по логотипу на главной открывают скрытую страницу
   const nav = document.querySelector('.nav');
   const brand = document.querySelector('.brand');
-  const addSecret = () => {
-    if (!nav || nav.querySelector('.nav-secret')) return;
+  // пункт .brother виден только на самой скрытой странице, ярлыка в меню нет
+  if (nav && root.dataset.page === 'brother') {
     const a = document.createElement('a');
     a.className = 'nav-secret';
-    a.href = 'brother.html#dapi';
+    a.href = 'brother.html';
     a.textContent = '.brother';
-    if (root.dataset.page === 'brother') a.setAttribute('aria-current', 'page');
+    a.setAttribute('aria-current', 'page');
     nav.append(a);
-  };
-  // пункт .brother виден только на самой скрытой странице, ярлыка в меню нет
-  if (root.dataset.page === 'brother') addSecret();
-  try { localStorage.removeItem('dapi-brother'); } catch { /* нет доступа */ }
+  }
   if (brand && root.dataset.page === 'index') {
     const letters = brand.querySelectorAll('.wordmark span');
     let clicks = 0;
@@ -117,7 +115,7 @@
       if (clicks >= 4) {
         // пропуск живет в этой вкладке, по прямой ссылке страница не открывается
         try { sessionStorage.setItem(PASS, '1'); } catch { /* нет доступа */ }
-        setTimeout(() => { location.href = 'brother.html#dapi'; }, 260);
+        setTimeout(() => { location.href = 'brother.html'; }, 260);
         return;
       }
       timer = setTimeout(() => {
@@ -126,6 +124,42 @@
       }, 1600);
     });
   }
+
+  // кадр с людьми на первом экране: команда сменяется сама, по клику следующий
+  document.querySelectorAll('[data-people]').forEach(box => {
+    const slides = [...box.querySelectorAll('[data-slide]')];
+    const frame = box.querySelector('.people-frame');
+    const name = box.querySelector('[data-people-name]');
+    const count = box.querySelector('[data-people-count]');
+    if (slides.length < 2 || !frame) return;
+    const two = n => String(n).padStart(2, '0');
+    let i = 0;
+    let timer = 0;
+    const show = n => {
+      slides[i].classList.remove('is-on');
+      i = (n + slides.length) % slides.length;
+      slides[i].classList.add('is-on');
+      if (name) name.textContent = `${slides[i].dataset.letter} / ${slides[i].dataset.name}`;
+      if (count) count.textContent = `${two(i + 1)} / ${two(slides.length)}`;
+    };
+    const stop = () => clearInterval(timer);
+    const start = () => {
+      stop();
+      if (!calm) timer = setInterval(() => show(i + 1), 4200);
+    };
+    frame.addEventListener('click', () => { show(i + 1); start(); });
+    box.addEventListener('pointerenter', stop);
+    box.addEventListener('pointerleave', start);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    start();
+  });
+
+  // на сенсорном экране буква открывает человека по касанию
+  document.querySelectorAll('.letter').forEach(l => l.addEventListener('click', () => {
+    const on = !l.classList.contains('is-person');
+    document.querySelectorAll('.letter.is-person').forEach(x => x.classList.remove('is-person'));
+    l.classList.toggle('is-person', on);
+  }));
 
   // маленький экран приложения идет за курсором в пределах своей строки
   const hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
