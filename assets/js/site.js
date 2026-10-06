@@ -127,7 +127,9 @@
   // на телефоне лента разделов прокручивается к текущему
   const current = nav && nav.querySelector('[aria-current="page"]');
   if (current && nav.scrollWidth > nav.clientWidth) {
-    nav.scrollLeft += current.getBoundingClientRect().left - nav.getBoundingClientRect().left - 16;
+    const c = current.getBoundingClientRect();
+    const n = nav.getBoundingClientRect();
+    if (c.right > n.right - 16 || c.left < n.left) nav.scrollLeft += c.left - n.left - 16;
   }
 
   // появление блоков при прокрутке, первый экран виден сразу
